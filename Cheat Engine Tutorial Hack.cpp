@@ -30,6 +30,7 @@ DWORD GetProcId(const std::wstring& processName)
 	return 0;
 }
 
+// TODO: Why is the moduleBase always different upon start for .exe?
 uintptr_t GetModuleBaseAddress(DWORD procId, const wchar_t* modName)
 {
 	uintptr_t modBaseAddr = 0;
@@ -51,6 +52,9 @@ uintptr_t GetModuleBaseAddress(DWORD procId, const wchar_t* modName)
 				}
 			} while (Module32Next(hSnap, &modEntry));
 		}
+		else {
+			std::cout << "No modules found." << std::endl;
+		}
 	}
 	CloseHandle(hSnap);
 	return modBaseAddr;
@@ -61,27 +65,52 @@ uintptr_t FindDMAAddy(HANDLE hProc, uintptr_t ptr, std::vector<unsigned int> off
 	uintptr_t addr = ptr;
 	for (unsigned int i = 0; i < offsets.size(); ++i)
 	{
-		ReadProcessMemory(hProc, (BYTE*)(addr), &addr, sizeof(addr), 0);
+		ReadProcessMemory(hProc, (LPVOID*)(addr), &addr, sizeof(addr), 0);
 		addr = addr + offsets[i];
 	}
 	return addr;
 }
 
+void PrintLastErrorMessage()
+{
+	DWORD errorMessageID = ::GetLastError();
+	if (errorMessageID == 0)
+		return;
+
+	LPSTR messageBuffer = nullptr;
+	size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+
+	std::string message(messageBuffer, size);
+
+	LocalFree(messageBuffer);
+
+	std::cout << errorMessageID << ": " << message << std::endl;;
+}
+
 int main()
 {
-	DWORD procId = GetProcId(L"Cheat Engine Tutorial Hack.exe");
-	uintptr_t moduleBase = GetModuleBaseAddress(procId, L"Cheat Engine Tutorial Hack.exe");
+	DWORD procId = GetProcId(L"Tutorial-i386.exe");
+	uintptr_t moduleBase = GetModuleBaseAddress(procId, L"Tutorial-i386.exe");
 	HANDLE hProcess = 0;
+
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, procId);
-	if (hProcess && moduleBase && procId) {
-		uintptr_t dynamicPtrBaseAddr = moduleBase + 0x2015D0; // Why is the moduleBase always different?
+	if (!hProcess)
+	{
+		PrintLastErrorMessage();
+	}
+
+	if (hProcess && /*moduleBase &&*/ procId) {
+		uintptr_t dynamicPtrBaseAddr = 0x00400000 + 0x2015D0;
 		std::cout << "DynamicPtrBaseAddr = " << "0x" << std::hex << dynamicPtrBaseAddr << std::endl;
 
-		//uintptr_t test = 0;
-		//ReadProcessMemory(hProcess, (BYTE*)dynamicPtrBaseAddr, &test, sizeof(test), nullptr);
-		//std::cout << "test = " << "0x" << std::hex << test << std::endl;
 
-		std::vector<unsigned int> ammoOffsets = { 0x480, 0x0 };
+		uintptr_t test = 0;
+		int result = ReadProcessMemory(hProcess, (LPVOID*)dynamicPtrBaseAddr, &test, sizeof(test), nullptr);
+		std::cout << "test = " << "0x" << std::hex << result << std::endl;
+		PrintLastErrorMessage();
+
+		std::vector<unsigned int> ammoOffsets = { 0x480 };
 		uintptr_t ammoAddr = FindDMAAddy(hProcess, dynamicPtrBaseAddr, ammoOffsets);
 		std::cout << "ammoAddr = " << "0x" << std::hex << ammoAddr << std::endl;
 
