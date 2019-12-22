@@ -1,8 +1,9 @@
+#ifndef PROCESS_SERVICE_H
+#define PROCESS_SERVICE_H
+
 #include <iostream>
 #include <windows.h>
-#include <tlhelp32.h>
 #include <vector>
-#include "Util.h"
 
 class ProcessService
 {
@@ -22,3 +23,5 @@ public:
 	void attach();
 	void solveStep2();
 };
+
+#endif

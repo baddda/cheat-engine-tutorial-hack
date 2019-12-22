@@ -1,4 +1,6 @@
 #include "ProcessService.h"
+#include "Util.h"
+#include <tlhelp32.h>
 
 ProcessService* ProcessService::instance = 0;
 

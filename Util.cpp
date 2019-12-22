@@ -1,4 +1,9 @@
 #include "Util.h"
+#include <iostream>
+#include <windows.h>
+#include <tlhelp32.h>
+#include <vector>
+
 
 std::wstring s2ws(const std::string& s)
 {
