@@ -23,16 +23,16 @@ int main()
 
 		std::vector<unsigned int> ammoOffsets = { 0x480 };
 		uintptr_t healthAddr = FindDMAAddy(hProcess, dynamicPtrBaseAddr, ammoOffsets);
-		std::cout << "ammoAddr = " << "0x" << std::hex << healthAddr << std::endl;
+		std::cout << "healthAddr = " << "0x" << std::hex << healthAddr << std::endl;
 
 		int healtValue = 0;
 		ReadProcessMemory(hProcess, (LPVOID)healthAddr, &healtValue, sizeof(healtValue), nullptr);
-		std::cout << "Curent ammo = " << std::dec << healtValue << std::endl;
+		std::cout << "healtValue = " << std::dec << healtValue << std::endl;
 
 		int newHealth = 1000;
 		WriteProcessMemory(hProcess, (LPVOID*)healthAddr, &newHealth, sizeof(newHealth), nullptr);
 		ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
-		std::cout << "New ammo = " << std::dec << healtValue << std::endl;
+		std::cout << "newHealth = " << std::dec << healtValue << std::endl;
 
 	}
 	getchar();
