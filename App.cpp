@@ -9,6 +9,7 @@ int main()
 {
 	ProcessService* processService = ProcessService::getInstance();
 	processService->attach();
+	processService->solveStep2();
 
 	getchar();
 	return 0;
