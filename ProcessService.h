@@ -22,6 +22,7 @@ public:
 	static ProcessService* getInstance();
 	void attach();
 	void solveStep2();
+	void solveStep3();
 };
 
 #endif

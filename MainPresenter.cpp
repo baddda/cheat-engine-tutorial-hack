@@ -15,9 +15,9 @@ void MainPresenter::start()
 
 void MainPresenter::handleInput()
 {
-	view->showText("Solving step");
 	ProcessService* processService = ProcessService::getInstance();
-	processService->solveStep2();
+	processService->solveStep3();
+	view->showText("Step solved");
 	view->waitForInput();
 }
 
