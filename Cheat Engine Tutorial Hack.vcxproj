@@ -147,7 +147,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Cheat Engine Tutorial Hack.cpp" />
+    <ClCompile Include="App.cpp" />
+    <ClCompile Include="MainPresenter.cpp" />
+    <ClCompile Include="MainView.cpp" />
+    <ClCompile Include="ProcessService.cpp" />
+    <ClCompile Include="Util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainPresenter.h" />
+    <ClInclude Include="MainView.h" />
+    <ClInclude Include="ProcessService.h" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
