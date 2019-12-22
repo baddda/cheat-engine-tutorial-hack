@@ -16,31 +16,40 @@ void ProcessService::attach() {
 
 	procId = getProcId(L"Tutorial-i386.exe");
 	moduleBase = getModuleBaseAddress(procId, L"Tutorial-i386.exe");
-	hProcess = 0;
 
-	if (!OpenProcess(PROCESS_ALL_ACCESS, NULL, procId))
+	if (!procId)
+	{
+		OutputDebugString(L"Process not found");
+		return;
+	}
+
+	if (!moduleBase)
+	{
+		OutputDebugString(L"Base address not found");
+		return;
+	}
+
+	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, procId);
+	if (!hProcess)
 	{
 		PrintLastErrorMessage();
+		return;
 	}
 }
 
 void ProcessService::solveStep2()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x2015D0;
-	std::cout << "DynamicPtrBaseAddr = " << "0x" << std::hex << dynamicPtrBaseAddr << std::endl;
 
 	std::vector<unsigned int> ammoOffsets = { 0x480 };
 	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, ammoOffsets);
-	std::cout << "healthAddr = " << "0x" << std::hex << healthAddr << std::endl;
 
 	int healtValue = 0;
 	ReadProcessMemory(hProcess, (LPVOID)healthAddr, &healtValue, sizeof(healtValue), nullptr);
-	std::cout << "healtValue = " << std::dec << healtValue << std::endl;
 
 	int newHealth = 1000;
 	WriteProcessMemory(hProcess, (LPVOID*)healthAddr, &newHealth, sizeof(newHealth), nullptr);
 	ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
-	std::cout << "newHealth = " << std::dec << healtValue << std::endl;
 }
 
 DWORD ProcessService::getProcId(const std::wstring& processName)
