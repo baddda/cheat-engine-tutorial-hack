@@ -3,22 +3,33 @@
 
 #include <iostream>
 #include <sstream>
+#include <Windows.h>
 
-template< typename T >
-std::string NumberToHexString(T i)
-{
-	std::stringstream stream;
-	stream << "0x" << std::hex << i;
-	return stream.str();
-}
+class debugStreambuf : public std::streambuf {
+public:
+    virtual int_type overflow(int_type c = EOF) {
+        if (c != EOF) {
+            TCHAR buf[] = { c, '\0' };
+            OutputDebugString(buf);
+        }
+        return c;
+    }
+};
 
-template <typename T>
-std::string NumberToString(T i)
-{
-	std::stringstream stream;
-	stream << i;
-	return stream.str();
-}
+class Clog2VisualStudioDebugOutput {
+
+    debugStreambuf dbgstream;
+    std::streambuf* default_stream;
+
+public:
+    Clog2VisualStudioDebugOutput() {
+        default_stream = std::clog.rdbuf(&dbgstream);
+    }
+
+    ~Clog2VisualStudioDebugOutput() {
+        std::clog.rdbuf(default_stream);
+    }
+};
 
 void PrintLastErrorMessage();
 

@@ -9,6 +9,8 @@
 
 int main()
 {
+	Clog2VisualStudioDebugOutput c2v;
+
 	ProcessService* processService = ProcessService::getInstance();
 	processService->attach();
 
