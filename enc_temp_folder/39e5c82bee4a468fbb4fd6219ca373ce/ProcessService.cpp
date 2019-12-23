@@ -21,13 +21,13 @@ void ProcessService::attach() {
 
 	if (!procId)
 	{
-		std::clog << "Process not found" << std::endl;
+		OutputDebugString(L"Process not found");
 		return;
 	}
 
 	if (!moduleBase)
 	{
-		std::clog << "Base address not found" << std::endl;
+		OutputDebugString(L"Base address not found");
 		return;
 	}
 
