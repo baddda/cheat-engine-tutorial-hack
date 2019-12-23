@@ -12,7 +12,7 @@ public:
 	MainPresenter() {}
 	void bind(MainView& view);
 	void start();
-	void handleInput();
+	void handleInput(int input);
 };
 
 #endif

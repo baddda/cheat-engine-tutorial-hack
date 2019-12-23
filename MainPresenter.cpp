@@ -9,14 +9,23 @@ void MainPresenter::bind(MainView& view)
 
 void MainPresenter::start()
 {
-	view->showText("Press a enter to start...");
+	view->showText("Which step you want to solve?");
 	view->waitForInput();
 }
 
-void MainPresenter::handleInput()
+void MainPresenter::handleInput(int input)
 {
 	ProcessService* processService = ProcessService::getInstance();
-	processService->solveStep3();
+	switch (input)
+	{
+	case 2:
+		processService->solveStep2();
+	case 3:
+		processService->solveStep3();
+	default:
+		break;
+	}
+
 	view->showText("Step solved");
 	view->waitForInput();
 }

@@ -11,10 +11,9 @@ void MainView::showText(std::string text)
 	std::cout << text << std::endl;
 }
 
-
 void MainView::waitForInput()
 {
-
-	getchar();
-	presenter->handleInput();
+	int input = 0;
+	std::cin >> input;
+	presenter->handleInput(input);
 }
