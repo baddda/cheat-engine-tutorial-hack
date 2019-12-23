@@ -112,11 +112,10 @@ uintptr_t ProcessService::getModuleBaseAddress(DWORD procId, const wchar_t* modN
 		{
 			do
 			{
-				//OutputDebugString(L"Module Found");
 				if (!_wcsicmp(modEntry.szModule, modName))
 				{
 					modBaseAddr = (uintptr_t)modEntry.modBaseAddr;
-					//OutputDebugString(std::cout << "Found base address: " << "0x" << std::hex << modBaseAddr << std::endl);
+					std::clog << "Found base address: " << "0x" << std::hex << modBaseAddr << std::endl;
 					break;
 				}
 			} while (Module32Next(hSnap, &modEntry));
