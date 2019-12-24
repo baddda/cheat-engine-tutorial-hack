@@ -43,8 +43,8 @@ void ProcessService::solveStep2()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x2015D0;
 
-	std::vector<unsigned int> ammoOffsets = { 0x480 };
-	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, ammoOffsets);
+	std::vector<unsigned int> healthOffsets = { 0x480 };
+	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
 	std::clog << "Health address: " << "0x" << std::hex << healthAddr << std::endl;
 
 	int healtValue = 0;
@@ -54,15 +54,15 @@ void ProcessService::solveStep2()
 	WriteProcessMemory(hProcess, (LPVOID*)healthAddr, &newHealth, sizeof(newHealth), nullptr);
 	ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
 
-	std::clog << "New Health Value: " << healtValue << std::endl;
+	std::clog << "New aealth value: " << healtValue << std::endl;
 }
 
 void ProcessService::solveStep3()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x2015E0;
 
-	std::vector<unsigned int> ammoOffsets = { 0x484 };
-	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, ammoOffsets);
+	std::vector<unsigned int> healthOffsets = { 0x484 };
+	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
 	std::clog << "Health address: " << "0x" << std::hex << healthAddr << std::endl;
 
 	int healtValue = 0;
@@ -71,7 +71,36 @@ void ProcessService::solveStep3()
 	int newHealth = 5000;
 	WriteProcessMemory(hProcess, (LPVOID*)healthAddr, &newHealth, sizeof(newHealth), nullptr);
 	ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
+	std::clog << "New health value: " << healtValue << std::endl;
+}
+
+void ProcessService::solveStep4()
+{
+	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x201600;
+
+	std::vector<unsigned int> healthOffsets = { 0x494 };
+	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
+	std::clog << "Health address: " << "0x" << std::hex << healthAddr << std::endl;
+
+	float healtValue = 0;
+	ReadProcessMemory(hProcess, (LPVOID)healthAddr, &healtValue, sizeof(healtValue), nullptr);
+
+	float newHealth = 5000;
+	WriteProcessMemory(hProcess, (LPVOID*)healthAddr, &newHealth, sizeof(newHealth), nullptr);
+	ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
 	std::clog << "New Health Value: " << healtValue << std::endl;
+
+	std::vector<unsigned int> ammoOffsets = { 0x498 };
+	uintptr_t ammoAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, ammoOffsets);
+	std::clog << "Ammo address: " << "0x" << std::hex << ammoAddr << std::endl;
+
+	double ammoValue = 0;
+	ReadProcessMemory(hProcess, (LPVOID)ammoAddr, &ammoValue, sizeof(ammoValue), nullptr);
+
+	double newAmmo = 5000;
+	WriteProcessMemory(hProcess, (LPVOID*)ammoAddr, &newAmmo, sizeof(newAmmo), nullptr);
+	ReadProcessMemory(hProcess, (LPVOID*)ammoAddr, &ammoValue, sizeof(ammoValue), nullptr);
+	std::clog << "New vmmo value: " << ammoValue << std::endl;
 }
 
 DWORD ProcessService::getProcId(const std::wstring& processName)

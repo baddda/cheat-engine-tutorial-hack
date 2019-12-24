@@ -23,6 +23,7 @@ public:
 	void attach();
 	void solveStep2();
 	void solveStep3();
+	void solveStep4();
 };
 
 #endif
