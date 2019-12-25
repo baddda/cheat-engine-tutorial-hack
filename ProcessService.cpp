@@ -45,9 +45,8 @@ bool ProcessService::attach() {
 bool ProcessService::solveStep2()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x2015D0;
-	BOOL success = 0;
-	std::vector<unsigned int> healthOffsets = { 0x480 };
 
+	std::vector<unsigned int> healthOffsets = { 0x480 };
 	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
 	std::clog << "Health address: " << "0x" << std::hex << healthAddr << std::endl;
 
@@ -66,8 +65,8 @@ bool ProcessService::solveStep2()
 bool ProcessService::solveStep3()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x2015E0;
-	std::vector<unsigned int> healthOffsets = { 0x484 };
 
+	std::vector<unsigned int> healthOffsets = { 0x484 };
 	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
 	std::clog << "Health address: " << "0x" << std::hex << healthAddr << std::endl;
 
@@ -86,9 +85,8 @@ bool ProcessService::solveStep3()
 bool ProcessService::solveStep4()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x201600;
-	std::vector<unsigned int> healthOffsets = { 0x494 };
-	std::vector<unsigned int> ammoOffsets = { 0x498 };
 
+	std::vector<unsigned int> healthOffsets = { 0x494 };
 	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
 	std::clog << "Health address: " << "0x" << std::hex << healthAddr << std::endl;
 
@@ -101,6 +99,7 @@ bool ProcessService::solveStep4()
 	ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
 	std::clog << "New Health Value: " << healtValue << std::endl;
 
+	std::vector<unsigned int> ammoOffsets = { 0x498 };
 	uintptr_t ammoAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, ammoOffsets);
 	std::clog << "Ammo address: " << "0x" << std::hex << ammoAddr << std::endl;
 
@@ -122,7 +121,6 @@ bool ProcessService::solveStep5()
 	BOOL success = 0;
 	byte newOpcode[2] = { 0x90, 0x90 };
 	DWORD oldprotect;
-	byte opcode = 0;
 
 	std::clog << "Code address: " << "0x" << std::hex << codeAddress << std::endl;
 
@@ -134,6 +132,7 @@ bool ProcessService::solveStep5()
 		return false;
 	}
 
+	byte opcode = 0;
 	success = ReadProcessMemory(hProcess, (LPVOID)codeAddress, &opcode, sizeof(opcode), nullptr);
 	if (!success)
 	{
