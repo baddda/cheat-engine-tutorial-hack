@@ -27,6 +27,8 @@ void MainPresenter::handleInput(int input)
 		processService->solveStep4();
 	case 5:
 		success = processService->solveStep5();
+	case 6:
+		processService->solveStep6();
 	default:
 		break;
 	}
