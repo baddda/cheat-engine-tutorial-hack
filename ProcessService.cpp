@@ -120,7 +120,7 @@ bool ProcessService::solveStep5()
 	}
 	//memcpy(dst, src, size);
 
-	int opcode = 0;
+	byte opcode = 0;
 	success = ReadProcessMemory(hProcess, (LPVOID)codeAddress, &opcode, sizeof(opcode), nullptr);
 	if (!success)
 	{
@@ -128,7 +128,7 @@ bool ProcessService::solveStep5()
 		PrintLastErrorMessage();
 		return false;
 	}
-	std::clog << "Read opcode: " << "0x" << std::hex << opcode << std::endl;
+	std::clog << "Read opcode: " << "0x"  << unsigned(opcode) << std::endl;
 
 
 	//VirtualProtect(dst, size, oldprotect, &oldprotect);
