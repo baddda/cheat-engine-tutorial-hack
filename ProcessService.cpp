@@ -107,20 +107,20 @@ bool ProcessService::solveStep5()
 {
 	uintptr_t codeAddress = moduleBase + 0x24E98;
 	BOOL success = 0;
+	byte newOpcode[2] = { 0x90, 0x90 };
+	DWORD oldprotect;
+	byte opcode = 0;
 
 	std::clog << "Code address: " << "0x" << std::hex << codeAddress << std::endl;
 
-	DWORD oldprotect;
-	success = VirtualProtectEx(hProcess, (LPVOID)codeAddress, 1024, PAGE_EXECUTE_READWRITE, &oldprotect);
+	success = VirtualProtectEx(hProcess, (LPVOID)codeAddress, std::size(newOpcode), PAGE_EXECUTE_READWRITE, &oldprotect);
 	if (!success)
 	{
 		std::clog << "VirtualProtectEx failed" << std::endl;
 		PrintLastErrorMessage();
 		return false;
 	}
-	//memcpy(dst, src, size);
 
-	byte opcode = 0;
 	success = ReadProcessMemory(hProcess, (LPVOID)codeAddress, &opcode, sizeof(opcode), nullptr);
 	if (!success)
 	{
@@ -130,14 +130,22 @@ bool ProcessService::solveStep5()
 	}
 	std::clog << "Read opcode: " << "0x"  << unsigned(opcode) << std::endl;
 
+	success = WriteProcessMemory(hProcess, (LPVOID*)codeAddress, newOpcode, std::size(newOpcode), nullptr);
+	if (!success)
+	{
+		std::clog << "WriteProcessMemory failed" << std::endl;
+		PrintLastErrorMessage();
+		return false;
+	}
 
-	//VirtualProtect(dst, size, oldprotect, &oldprotect);
+	success = VirtualProtectEx(hProcess, (LPVOID)codeAddress, std::size(newOpcode), oldprotect, &oldprotect);
+	if (!success)
+	{
+		std::clog << "VirtualProtectEx failed" << std::endl;
+		PrintLastErrorMessage();
+		return false;
+	}
 
-
-	//int newHealth = 5000;
-	//WriteProcessMemory(hProcess, (LPVOID*)healthAddr, &newHealth, sizeof(newHealth), nullptr);
-	//ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &opcode, sizeof(opcode), nullptr);
-	//std::clog << "New health value: " << opcode << std::endl;
 	return true;
 }
 
