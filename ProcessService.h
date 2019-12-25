@@ -20,12 +20,12 @@ private:
 	uintptr_t getModuleBaseAddress(DWORD procId, const wchar_t* modName);
 public:
 	static ProcessService* getInstance();
-	void attach();
-	void solveStep2();
-	void solveStep3();
-	void solveStep4();
+	bool attach();
+	bool solveStep2();
+	bool solveStep3();
+	bool solveStep4();
 	bool solveStep5();
-	void solveStep6();
+	bool solveStep6();
 };
 
 #endif

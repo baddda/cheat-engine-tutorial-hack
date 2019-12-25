@@ -14,7 +14,7 @@ ProcessService* ProcessService::getInstance()
 	return instance;
 }
 
-void ProcessService::attach() {
+bool ProcessService::attach() {
 
 	procId = getProcId(L"Tutorial-i386.exe");
 	moduleBase = getModuleBaseAddress(procId, L"Tutorial-i386.exe");
@@ -22,28 +22,32 @@ void ProcessService::attach() {
 	if (!procId)
 	{
 		std::clog << "Process not found" << std::endl;
-		return;
+		return false;
 	}
 
 	if (!moduleBase)
 	{
 		std::clog << "Base address not found" << std::endl;
-		return;
+		return false;
 	}
 
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, procId);
 	if (!hProcess)
 	{
+		std::clog << "Could not open process" << std::endl;
 		PrintLastErrorMessage();
-		return;
+		return false;
 	}
+
+	return true;
 }
 
-void ProcessService::solveStep2()
+bool ProcessService::solveStep2()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x2015D0;
-
+	BOOL success = 0;
 	std::vector<unsigned int> healthOffsets = { 0x480 };
+
 	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
 	std::clog << "Health address: " << "0x" << std::hex << healthAddr << std::endl;
 
@@ -52,16 +56,18 @@ void ProcessService::solveStep2()
 
 	int newHealth = 1000;
 	WriteProcessMemory(hProcess, (LPVOID*)healthAddr, &newHealth, sizeof(newHealth), nullptr);
-	ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
 
-	std::clog << "New aealth value: " << healtValue << std::endl;
+	ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
+	std::clog << "New health value: " << healtValue << std::endl;
+
+	return true;
 }
 
-void ProcessService::solveStep3()
+bool ProcessService::solveStep3()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x2015E0;
-
 	std::vector<unsigned int> healthOffsets = { 0x484 };
+
 	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
 	std::clog << "Health address: " << "0x" << std::hex << healthAddr << std::endl;
 
@@ -70,15 +76,19 @@ void ProcessService::solveStep3()
 
 	int newHealth = 5000;
 	WriteProcessMemory(hProcess, (LPVOID*)healthAddr, &newHealth, sizeof(newHealth), nullptr);
+
 	ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
 	std::clog << "New health value: " << healtValue << std::endl;
+
+	return true;
 }
 
-void ProcessService::solveStep4()
+bool ProcessService::solveStep4()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x201600;
-
 	std::vector<unsigned int> healthOffsets = { 0x494 };
+	std::vector<unsigned int> ammoOffsets = { 0x498 };
+
 	uintptr_t healthAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
 	std::clog << "Health address: " << "0x" << std::hex << healthAddr << std::endl;
 
@@ -87,10 +97,10 @@ void ProcessService::solveStep4()
 
 	float newHealth = 5000;
 	WriteProcessMemory(hProcess, (LPVOID*)healthAddr, &newHealth, sizeof(newHealth), nullptr);
+
 	ReadProcessMemory(hProcess, (LPVOID*)healthAddr, &healtValue, sizeof(healtValue), nullptr);
 	std::clog << "New Health Value: " << healtValue << std::endl;
 
-	std::vector<unsigned int> ammoOffsets = { 0x498 };
 	uintptr_t ammoAddr = findDMAAddy(hProcess, dynamicPtrBaseAddr, ammoOffsets);
 	std::clog << "Ammo address: " << "0x" << std::hex << ammoAddr << std::endl;
 
@@ -99,8 +109,11 @@ void ProcessService::solveStep4()
 
 	double newAmmo = 5000;
 	WriteProcessMemory(hProcess, (LPVOID*)ammoAddr, &newAmmo, sizeof(newAmmo), nullptr);
+
 	ReadProcessMemory(hProcess, (LPVOID*)ammoAddr, &ammoValue, sizeof(ammoValue), nullptr);
 	std::clog << "New vmmo value: " << ammoValue << std::endl;
+
+	return true;
 }
 
 bool ProcessService::solveStep5()
@@ -128,7 +141,7 @@ bool ProcessService::solveStep5()
 		PrintLastErrorMessage();
 		return false;
 	}
-	std::clog << "Read opcode: " << "0x"  << unsigned(opcode) << std::endl;
+	std::clog << "Read opcode: " << "0x" << unsigned(opcode) << std::endl;
 
 	success = WriteProcessMemory(hProcess, (LPVOID*)codeAddress, newOpcode, std::size(newOpcode), nullptr);
 	if (!success)
@@ -149,7 +162,7 @@ bool ProcessService::solveStep5()
 	return true;
 }
 
-void ProcessService::solveStep6()
+bool ProcessService::solveStep6()
 {
 	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x201630;
 
@@ -162,8 +175,11 @@ void ProcessService::solveStep6()
 
 	int newValue = 5000;
 	WriteProcessMemory(hProcess, (LPVOID*)valueAddr, &newValue, sizeof(newValue), nullptr);
+
 	ReadProcessMemory(hProcess, (LPVOID*)valueAddr, &value, sizeof(value), nullptr);
 	std::clog << "New Health Value: " << value << std::endl;
+
+	return true;
 }
 
 DWORD ProcessService::getProcId(const std::wstring& processName)
