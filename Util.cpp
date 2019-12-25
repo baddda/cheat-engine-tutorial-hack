@@ -18,5 +18,6 @@ void PrintLastErrorMessage()
 
 	LocalFree(messageBuffer);
 
+	std::clog << "Error code: " << std::dec << errorMessageID << std::endl;
 	OutputDebugStringA(message.c_str());
 }

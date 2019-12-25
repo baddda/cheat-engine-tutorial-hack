@@ -24,6 +24,7 @@ public:
 	void solveStep2();
 	void solveStep3();
 	void solveStep4();
+	bool solveStep5();
 };
 
 #endif

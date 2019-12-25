@@ -15,6 +15,7 @@ void MainPresenter::start()
 
 void MainPresenter::handleInput(int input)
 {
+	bool success = 0;
 	ProcessService* processService = ProcessService::getInstance();
 	switch (input)
 	{
@@ -24,11 +25,20 @@ void MainPresenter::handleInput(int input)
 		processService->solveStep3();
 	case 4:
 		processService->solveStep4();
+	case 5:
+		success = processService->solveStep5();
 	default:
 		break;
 	}
 
-	view->showText("Step solved");
+	if (success)
+	{
+		view->showText("Step solved");
+	}
+	else
+	{
+		view->showText("Step failed");
+	}
 	view->waitForInput();
 }
 
