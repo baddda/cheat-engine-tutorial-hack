@@ -11,6 +11,7 @@
 TODO
 - Add error handling and error logs for all solve step methods.
 - Make one method for all the steps that have a similar solution.
+- Remove megic numbers.
 */
 
 int main()
